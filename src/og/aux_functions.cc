@@ -10,7 +10,7 @@
  */
 void Uso(int argc, char *argv[]) {
     if (argc != 2) {
-        std::cerr << RED << BOLD << "Error: Parámetros inválidos.\n" << RESET << GRAY << ITALIC << "Prueba " << RESET << GRAY << BOLD << "'./program input.txt'\n";
+        std::cerr << RED << BOLD << "Error: Parámetros inválidos.\n" << RESET << GRAY << ITALIC << "Prueba " << RESET << GRAY << BOLD << "'./program <Ruta_input>.txt'\n";
         exit(EXIT_FAILURE);
     }
 }

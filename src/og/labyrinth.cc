@@ -201,6 +201,7 @@ Instance Labyrinth::AStarSearch() const {
     const int max_iter = 1000;  // Número máximo de iteraciones
     int iter = 0;  // Contador de iteraciones
 
+
     // Bucle principal de la búsqueda A*
     while (iter < max_iter) {
         iteracion_str << "Iteración " << iteracion++ << "\n";
@@ -239,49 +240,49 @@ Instance Labyrinth::AStarSearch() const {
             iteracion_str << "\n\n";
             break;  // Se ha encontrado el camino, salir del bucle
         }
-    }
 
-    // Explorar todos los vecinos del nodo actual
-    for (Cell neighbor : GetNeighbors(current_node)) {
-        // Si el vecino es inválido (ya inspeccionado o no transitable), continuar con el siguiente
-        if (InvalidNeighbor(neighbor, current_node, closed_nodes)) continue;
+        // Explorar todos los vecinos del nodo actual
+        for (Cell neighbor : GetNeighbors(current_node)) {
+            // Si el vecino es inválido (ya inspeccionado o no transitable), continuar con el siguiente
+            if (InvalidNeighbor(neighbor, current_node, closed_nodes)) continue;
 
-        // Si el vecino no está en los nodos abiertos, lo añadimos como nuevo nodo generado
-        if (!IsOpenNode(neighbor, open_nodes)) {
-            // Calculamos sus valores g(n), h(n) y f(n)
-            CalculateValues(neighbor, current_node);
+            // Si el vecino no está en los nodos abiertos, lo añadimos como nuevo nodo generado
+            if (!IsOpenNode(neighbor, open_nodes)) {
+                // Calculamos sus valores g(n), h(n) y f(n)
+                CalculateValues(neighbor, current_node);
 
-            // Añadimos el vecino a los nodos abiertos y a los nodos generados
-            open_nodes.push_back(neighbor);
-            generated.push_back(neighbor);
+                // Añadimos el vecino a los nodos abiertos y a los nodos generados
+                open_nodes.push_back(neighbor);
+                generated.push_back(neighbor);
 
-            // Guardamos la relación (padre-hijo) entre el nodo actual y el vecino
-            parents.push_back(std::make_pair(neighbor, current_node));
-        } else {
-            // Si el vecino ya está en open_nodes, se actualizan los valores si encontramos un mejor camino
-            UpdateIfBetter(neighbor, current_node, GetLabyrinth(), parents, open_nodes);
+                // Guardamos la relación (padre-hijo) entre el nodo actual y el vecino
+                parents.push_back(std::make_pair(neighbor, current_node));
+            } else {
+                // Si el vecino ya está en open_nodes, se actualizan los valores si encontramos un mejor camino
+                UpdateIfBetter(neighbor, current_node, GetLabyrinth(), parents, open_nodes);
+            }
         }
-    }
 
-    // Imprimir todos los nodos generados hasta ahora
-    iteracion_str << "Nodos generados: \n";
-    for (const auto& node : generated) {
-        iteracion_str << "(" << node.GetIPos() << "," << node.GetJPos() << ") ";
-    }
-    iteracion_str << "\n";
+        // Imprimir todos los nodos generados hasta ahora
+        iteracion_str << "Nodos generados: \n";
+        for (const auto& node : generated) {
+            iteracion_str << "(" << node.GetIPos() << "," << node.GetJPos() << ") ";
+        }
+        iteracion_str << "\n";
 
-    // Imprimir todos los nodos inspeccionados (en closed_nodes) hasta ahora
-    iteracion_str << "Nodos inspeccionados: \n";
-    for (const auto& node : closed_nodes) {
-        iteracion_str << "(" << node.GetIPos() << "," << node.GetJPos() << ") ";
-    }
-    iteracion_str << "\n\n";
+        // Imprimir todos los nodos inspeccionados (en closed_nodes) hasta ahora
+        iteracion_str << "Nodos inspeccionados: \n";
+        for (const auto& node : closed_nodes) {
+            iteracion_str << "(" << node.GetIPos() << "," << node.GetJPos() << ") ";
+        }
+        iteracion_str << "\n\n";
 
-    // Reordenar los nodos abiertos según el valor de f(n) para la siguiente iteración
-    if (!open_nodes.empty()) {
-        open_nodes = SortByFValue(open_nodes);
+        // Reordenar los nodos abiertos según el valor de f(n) para la siguiente iteración
+        if (!open_nodes.empty()) {
+            open_nodes = SortByFValue(open_nodes);
+        }
+        ++iter;
     }
-    ++iter;
 
     // Construir el camino desde el nodo inicial hasta el nodo final
     CellVector path = ConstructPath(current_node, GetStartNode(), parents);
