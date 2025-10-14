@@ -25,9 +25,10 @@ int main(int argc, char* argv[]) {
   Labyrinth labyrinth(fichero_entrada); // Creamos el laberinto
   bool exit = false;
 
+  system("clear");
+
   while (exit != true) {
-    system("clear");
-    std::cout << GRAY << BOLD << "Laberinto Seleccionado\n\n";
+    std::cout << GRAY << BOLD << "\nLaberinto Seleccionado\n\n";
     std::cout << labyrinth.PrintLabyrinth() << "\n" << RESET;
     ImprimirMenu();
     char opcion;
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]) {
     std::cout << UNDERLINE << "Introduce una opción:" << RESET << " ";
     std::cin >> opcion;
     switch (opcion) {
-      case '1': // Realizar búsqueda A*
+      case '1': // Realizar búsqueda A* estática
         StoreSearch(labyrinth, nombre_fichero);
         break;
       case '2': // Cambiar nodo inicial
@@ -56,22 +57,26 @@ int main(int argc, char* argv[]) {
         break;
       case '6': // Cambiar fichero de entrada
         std::cout << GREEN << BOLD << "\nCambiar fichero de entrada\n\n" << RESET;
-        std::cout << UNDERLINE << "Introduce el nuevo fichero de entrada (sin la ruta):" << RESET << " ";
+        std::cout << UNDERLINE << "Introduce el nuevo fichero de entrada (con la ruta):" << RESET << " ";
         std::cin >> nombre_fichero;  // Recibimos el nombre sin la ruta
         fichero_entrada.close();
         
-        nombre_fichero = "inputs/" + nombre_fichero;  // Actualizamos el nombre completo con la nueva ruta
+        nombre_fichero = nombre_fichero;  // Actualizamos el nombre completo con la nueva ruta
         fichero_entrada.open(nombre_fichero);  // Intentamos abrir el nuevo fichero
 
         if (fichero_entrada.fail()) {
           std::cerr << YELLOW << BOLD << "Fallo al abrir el nuevo fichero. Se seguirá usando " << RESET << argv[1] << BOLD << YELLOW << " por defecto.\n\n";
-          nombre_fichero = "inputs/" + std::string(argv[1]);  // Restauramos el fichero original
+          nombre_fichero = std::string(argv[1]);  // Restauramos el fichero original
           fichero_entrada.open(nombre_fichero);  // Reabrimos el fichero original
         } else {
           labyrinth = Labyrinth(fichero_entrada);  // Cargamos el nuevo laberinto
         }
         break;
-      case '7': // Salir
+      case '7': // Búsqueda A* dinámica
+        std::cout << GREEN << BOLD << "\nBúsqueda A* dinámica\n\n" << RESET;
+        StoreSearchDynamic(labyrinth, nombre_fichero);        
+        break;
+      case '8': // Salir
         std::cout << GREEN << BOLD << "\nSaliendo...\n\n";
         exit = true;
         break; // Señal para salir del programa

@@ -18,41 +18,38 @@ void UpdateDynamicObstacles(Labyrinth& labyrinth, double pin, double pout) {
     // Obtener posiciones de inicio y destino
     std::pair<int, int> start_pos = labyrinth.GetStartNode().GetPos();
     std::pair<int, int> end_pos = labyrinth.GetEndNode().GetPos();
+    std::vector<std::pair<int, int>> obstaculos_actuales;
+    obstacles = 0;
+    // 1. Cambiar aleatoriamente el estado de cada celda
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            // Nunca bloquear inicio ni destino
             if ((i == start_pos.first && j == start_pos.second) || (i == end_pos.first && j == end_pos.second)) continue;
             Cell& cell = labyrinth.Node({i, j});
             double u = dist(rng);
-            // 50% de probabilidad de cambiar de estado
             if (u < 0.5) {
-                // Cambia de estado
                 if (cell.GetKind() == 0) {
-                    cell.SetKind(1); // Libre a obstáculo
-                    obstacles++;
-                    obstacle_positions.push_back({i, j});
+                    cell.SetKind(1);
                 } else if (cell.GetKind() == 1) {
-                    cell.SetKind(0); // Obstáculo a libre
+                    cell.SetKind(0);
                 }
-            } else {
-                // Mantiene el estado
-                if (cell.GetKind() == 1) {
-                    obstacles++;
-                    obstacle_positions.push_back({i, j});
-                }
+            }
+            // Contar obstáculos tras el cambio
+            if (cell.GetKind() == 1) {
+                obstacles++;
+                obstaculos_actuales.push_back({i, j});
             }
         }
     }
-    // Si hay demasiados obstáculos, elimina aleatoriamente
-    while (obstacles > max_obstacles) {
-        int idx = rng() % obstacle_positions.size();
-        auto [i, j] = obstacle_positions[idx];
+    // 2. Si se supera el límite, convertir obstáculos aleatorios en libres
+    while (obstacles > max_obstacles && !obstaculos_actuales.empty()) {
+        int idx = rng() % obstaculos_actuales.size();
+        auto [i, j] = obstaculos_actuales[idx];
         Cell& cell = labyrinth.Node({i, j});
         if (cell.GetKind() == 1) {
             cell.SetKind(0);
             obstacles--;
         }
-        obstacle_positions.erase(obstacle_positions.begin() + idx);
+        obstaculos_actuales.erase(obstaculos_actuales.begin() + idx);
     }
 }
 

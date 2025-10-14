@@ -45,6 +45,9 @@ bool IsNodeValid(int row, int col, Labyrinth& labyrinth);
 // Realiza el flujo de salida que contiene la solución de la búsqueda
 std::ofstream StoreSearch(Labyrinth& labyrinth, std::string& instance_name);
 
+// Realiza el flujo de salida que contiene la solución de la búsqueda dinámica
+std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_name);
+
 // Construye el camino de la solución a partir de los padres
 CellVector ConstructPath(Cell current_node, 
                             Cell start_node, 

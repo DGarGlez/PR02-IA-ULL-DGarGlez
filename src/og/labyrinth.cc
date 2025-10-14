@@ -35,10 +35,11 @@ std::string Labyrinth::PrintLabyrinth(CellVector open_nodes, CellVector closed_n
     std::stringstream laberinto_str;
     for (std::vector<Cell> row : labyrinth_) {
         for (Cell cell : row) {
-            if (cell.GetKind() == 1) laberinto_str << "█";   // Muro = Cuadrado negro
-            if (cell.GetKind() == 3) laberinto_str << "I";   
-            if (cell.GetKind() == 4) laberinto_str << "F";  
-            if (cell.GetKind() == 0) { 
+            if (cell.GetKind() == 7) laberinto_str << "*";   // Camino marcado
+            else if (cell.GetKind() == 1) laberinto_str << "█";   // Muro = Cuadrado negro
+            else if (cell.GetKind() == 3) laberinto_str << "I";   
+            else if (cell.GetKind() == 4) laberinto_str << "F";  
+            else if (cell.GetKind() == 0) { 
                 if (IsClosedNode(cell, closed_nodes)){
                     if (cell == current_node || IsInPath(cell, path)) 
                         laberinto_str << "*";      // Nodo parte del camino final

@@ -38,6 +38,7 @@ class Labyrinth {
         // Getters
         Cell GetStartNode() const { return start_node_; }
         Cell GetEndNode() const { return end_node_; }
+        void SetStartNode(const Cell& new_start) { start_node_ = new_start; }
         int GetRows() const { return rows_; }
         int GetColumns() const { return columns_; }
         int GetChosenHeuristic() const { return chosen_heuristic_; }
