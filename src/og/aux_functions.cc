@@ -75,7 +75,7 @@ std::ofstream StoreSearch(Labyrinth& labyrinth, std::string& instance_name) {
     }
     output_file.open("output/instancias.md", std::ios_base::app);  // Abre el fichero en modo append
 
-    std::string id = instance_name.substr(7, 2);  // Obtiene el identificador de la instancia
+    std::string id = instance_name.substr(11);  // Obtiene el identificador de la instancia
 
     // Realizamos la búsqueda
     Instance table = labyrinth.AStarSearch();
@@ -155,12 +155,14 @@ std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_nam
     }
     output_file.open("output/instancias_dinamicas.md", std::ios_base::app);  // Abre el fichero en modo append
 
-    std::string id = instance_name.substr(7, 2);  // Obtiene el identificador de la instancia
+    std::string id = instance_name.substr(11);  // Obtiene el identificador de la instancia
 
     Labyrinth labyrinth_aux = labyrinth;  // Hacemos una copia del laberinto original para mostrar la ruta recorrida
     Instance table_final;  // Instancia final de la búsqueda dinámica
 
     Cell inicial = labyrinth.GetStartNode(); // Guardamos el nodo inicial original
+    int generados_totales = 0; // Contador de nodos generados totales
+    int visitados_totales = 0; // Contador de nodos visitados totales
 
     srand(time(NULL)); // Semilla para la generación aleatoria
     int probabilidad = 1;  // Probabilidad de cambiar un nodo (0-100)
@@ -176,6 +178,9 @@ std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_nam
 
     // Realizamos la búsqueda
     Instance table = labyrinth.AStarSearch();
+
+    generados_totales += table.generated.size();
+    visitados_totales += table.visited.size();
 
     if (table.path.size() == 0) {
         std::cout << RED << BOLD << "No se ha encontrado un camino al destino.\n" << RESET;
@@ -263,6 +268,9 @@ std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_nam
         // Realizamos la búsqueda de nuevo
         table = labyrinth.AStarSearch();
 
+        generados_totales += table.generated.size();
+        visitados_totales += table.visited.size();
+
         // Actualizamos el laberinto auxiliar
         labyrinth_aux = labyrinth;
 
@@ -291,8 +299,8 @@ std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_nam
 
     // Extraemos la información
     std::string path = VectorToString(table_final.path);  // Convierte el camino a string
-    int generados = table_final.generated.size();   // Número total de nodos generados en todas las búsquedas
-    int visitados = table_final.visited.size();     // Número total de nodos visitados en todas las búsquedas
+    int generados = generados_totales;   // Número total de nodos generados en todas las búsquedas
+    int visitados = visitados_totales;     // Número total de nodos visitados en todas las búsquedas
     int cost = coste_final;                    // Coste total del camino
 
     // Recorremos el laberinto auxiliar para marcar el camino final
@@ -342,6 +350,15 @@ std::ofstream StoreSearchDynamic(Labyrinth& labyrinth, std::string& instance_nam
                 << " | " << CenterText(std::to_string(cost), col_widths[3])
                 << " | " << CenterText(std::to_string(generados), col_widths[4])
                 << " | " << CenterText(std::to_string(visitados), col_widths[5]) << " |\n\n";
+
+
+    // Vuelvo a colocar el nodo inicial original en el laberinto
+    prev_start_pos = labyrinth.GetStartNode().GetPos();  // Guardar la posición anterior
+    labyrinth.Node(prev_start_pos).SetKind(1);                              // Quitar el tipo 3 del nodo anterior
+    new_start_pos = inicial.GetPos();                    // Obtener la nueva posición para el nodo inicial
+    labyrinth.Node(new_start_pos) = inicial;                                // Copiar los datos del nuevo nodo inicial
+    labyrinth.Node(new_start_pos).SetKind(3);                               // Establecer el tipo 3 en el nuevo nodo inicial
+    labyrinth.SetStartNode(labyrinth.Node(new_start_pos));                  // Actualizar el puntero del nodo inicial en el objeto Labyrinth
 
     output_file << "S: " << labyrinth.GetStartNode().GetPosString() << "\n";
     output_file << "E: " << labyrinth.GetEndNode().GetPosString() << "\n";
