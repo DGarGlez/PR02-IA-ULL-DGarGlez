@@ -76,7 +76,11 @@ int main(int argc, char* argv[]) {
         std::cout << GREEN << BOLD << "\nBúsqueda A* dinámica\n\n" << RESET;
         StoreSearchDynamic(labyrinth, nombre_fichero);        
         break;
-      case '8': // Salir
+      case '8': // Búsqueda A* modificada
+        std::cout << GREEN << BOLD << "\nBúsqueda A* modificada\n\n" << RESET;
+        StoreSearchMod(labyrinth, nombre_fichero);        
+        break;
+      case '9': // Salir
         std::cout << GREEN << BOLD << "\nSaliendo...\n\n";
         exit = true;
         break; // Señal para salir del programa

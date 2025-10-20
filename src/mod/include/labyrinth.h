@@ -3,6 +3,8 @@
 #include "cell.h"
 #include <cstdlib>
 #include <ctime>
+#include <random>
+
 
 // Define un vector de celdas como CellVector
 typedef std::vector<Cell> CellVector;
@@ -58,4 +60,7 @@ class Labyrinth {
 
         // Búsqueda A*
         Instance AStarSearch() const;
+
+        // Modificacion año pasado
+        Instance ModAStarSearch() const;
 };
